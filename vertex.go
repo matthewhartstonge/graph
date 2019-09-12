@@ -1,9 +1,9 @@
 package csp
 
-func NewVertex(k string) *Vertex {
+func NewVertex(label string) *Vertex {
 	return &Vertex{
-		K: k,
-		// V: v,
+		Label: label,
+		// Value: value,
 		visited:  false,
 		parents:  []*Vertex{},
 		children: []*Vertex{},
@@ -17,11 +17,15 @@ type Vertexer interface {
 	AddParent(v *Vertex) *Vertex
 }
 
+// Vertex provides the data structure for a node, or point, within a given
+// graph.
+//
+// When solving a state-space problem, a vertex represents a state.
 type Vertex struct {
-	// K provides the name of the node.
-	K string
-	// V provides the nodes value.
-	V int
+	// Label provides the name of the vertex.
+	Label string
+	// Value provides the vertex's value.
+	Value int
 	// visited specifies if the node has been visited.
 	visited bool
 	// parents contains the vertices that this vertex links to.
@@ -61,7 +65,7 @@ func (v *Vertex) AddChild(vertex *Vertex) *Vertex {
 // addToSet ensures no duplicates are added to the array based on key.
 func addToSet(src []*Vertex, vertex *Vertex) (dst []*Vertex, found bool) {
 	for _, v := range src {
-		if v.K == vertex.K {
+		if v.Label == vertex.Label {
 			// node already added to parents.
 			return src, true
 		}

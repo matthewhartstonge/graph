@@ -102,7 +102,7 @@ func printDescendants(vertex *Vertex) string {
 	for _, child := range vertex.children {
 		line = fmt.Sprintf(" = parent of => %s", printDescendants(child))
 	}
-	return fmt.Sprintf("(%s)%s", vertex.K, line)
+	return fmt.Sprintf("(%s)%s", vertex.Label, line)
 }
 
 func printHeritage(vertex *Vertex) string {
@@ -110,5 +110,5 @@ func printHeritage(vertex *Vertex) string {
 	for _, parent := range vertex.parents {
 		line = fmt.Sprintf(" = child of => %s", printHeritage(parent))
 	}
-	return fmt.Sprintf("(%s)%s", vertex.K, line)
+	return fmt.Sprintf("(%s)%s", vertex.Label, line)
 }

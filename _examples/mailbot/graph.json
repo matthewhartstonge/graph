@@ -1,0 +1,171 @@
+{
+  "vertices": [
+    {
+      "label": "mail"
+    },
+    {
+      "label": "ts"
+    },
+    {
+      "label": "o103"
+    },
+    {
+      "label": "b3"
+    },
+    {
+      "label": "o109"
+    },
+    {
+      "label": "b1"
+    },
+    {
+      "label": "b4"
+    },
+    {
+      "label": "o119"
+    },
+    {
+      "label": "o111"
+    },
+    {
+      "label": "c2"
+    },
+    {
+      "label": "b2"
+    },
+    {
+      "label": "o123"
+    },
+    {
+      "label": "storage"
+    },
+    {
+      "label": "c1"
+    },
+    {
+      "label": "c3"
+    },
+    {
+      "label": "o125"
+    },
+    {
+      "label": "r123"
+    }
+  ],
+  "edges": [
+    {
+      "v1": "o103",
+      "v2": "ts",
+      "cost": 8,
+      "directed": true
+    },
+    {
+      "v1": "o103",
+      "v2": "b3",
+      "cost": 4,
+      "directed": true
+    },
+    {
+      "v1": "o103",
+      "v2": "o109",
+      "cost": 12,
+      "directed": true
+    },
+    {
+      "v1": "ts",
+      "v2": "mail",
+      "cost": 6,
+      "directed": true
+    },
+    {
+      "v1": "b3",
+      "v2": "b1",
+      "cost": 4,
+      "directed": true
+    },
+    {
+      "v1": "b3",
+      "v2": "b4",
+      "cost": 7,
+      "directed": true
+    },
+    {
+      "v1": "o109",
+      "v2": "o119",
+      "cost": 16,
+      "directed": true
+    },
+    {
+      "v1": "o109",
+      "v2": "o111",
+      "cost": 4,
+      "directed": true
+    },
+    {
+      "v1": "b1",
+      "v2": "c2",
+      "cost": 3,
+      "directed": true
+    },
+    {
+      "v1": "b1",
+      "v2": "b2",
+      "cost": 6,
+      "directed": true
+    },
+    {
+      "v1": "b4",
+      "v2": "o109",
+      "cost": 7,
+      "directed": true
+    },
+    {
+      "v1": "o119",
+      "v2": "storage",
+      "cost": 7,
+      "directed": true
+    },
+    {
+      "v1": "o119",
+      "v2": "o123",
+      "cost": 9,
+      "directed": true
+    },
+    {
+      "v1": "c2",
+      "v2": "c1",
+      "cost": 4,
+      "directed": true
+    },
+    {
+      "v1": "c2",
+      "v2": "c3",
+      "cost": 6,
+      "directed": true
+    },
+    {
+      "v1": "b2",
+      "v2": "b4",
+      "cost": 3,
+      "directed": true
+    },
+    {
+      "v1": "o123",
+      "v2": "o125",
+      "cost": 4,
+      "directed": true
+    },
+    {
+      "v1": "o123",
+      "v2": "r123",
+      "cost": 4,
+      "directed": true
+    },
+    {
+      "v1": "c1",
+      "v2": "c3",
+      "cost": 8,
+      "directed": true
+    }
+  ]
+}

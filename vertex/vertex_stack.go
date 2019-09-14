@@ -1,4 +1,4 @@
-package csp
+package vertex
 
 // NewStack returns a new vertex stack.
 func NewStack() Stack {

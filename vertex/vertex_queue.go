@@ -1,5 +1,6 @@
-package csp
+package vertex
 
+// NewQueue returns a new vertex queue.
 func NewQueue() Queue {
 	return Queue{
 		len:   0,

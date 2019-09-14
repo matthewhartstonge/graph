@@ -1,18 +1,9 @@
-package csp
+package vertex
 
 import (
+	// External Imports
 	"github.com/sirupsen/logrus"
 )
-
-func NewVertex(label string) Vertexer {
-	return &Vertex{
-		label: label,
-		// Value: value,
-		visited:  false,
-		parents:  []Vertexer{},
-		children: []Vertexer{},
-	}
-}
 
 type Vertexer interface {
 	Label() string
@@ -23,6 +14,16 @@ type Vertexer interface {
 	AddParent(vertexer Vertexer) Vertexer
 	Visited() bool
 	SetVisited(visited bool)
+}
+
+func New(label string) Vertexer {
+	return &Vertex{
+		label: label,
+		// Value: value,
+		visited:  false,
+		parents:  []Vertexer{},
+		children: []Vertexer{},
+	}
 }
 
 // Vertex provides the data structure for a node, or point, within a given

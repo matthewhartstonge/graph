@@ -1,4 +1,9 @@
-package csp
+package edge
+
+import (
+	// Internal Imports
+	"github.com/matthewhartstonge/graph/vertex"
+)
 
 type Edger interface {
 	Cost() float64
@@ -7,13 +12,13 @@ type Edger interface {
 	SetDirected(directed bool)
 	Label() string
 	SetLabel(label string)
-	Vertex1() Vertexer
-	SetVertex1(vertex1 Vertexer)
-	Vertex2() Vertexer
-	SetVertex2(vertex2 Vertexer)
+	Vertex1() vertex.Vertexer
+	SetVertex1(vertex1 vertex.Vertexer)
+	Vertex2() vertex.Vertexer
+	SetVertex2(vertex2 vertex.Vertexer)
 }
 
-func NewEdge(vertex1 Vertexer, vertex2 Vertexer, opts ...EdgeOption) Edger {
+func New(vertex1 vertex.Vertexer, vertex2 vertex.Vertexer, opts ...Option) Edger {
 	edge := &Edge{
 		cost:     0,
 		directed: false,
@@ -31,18 +36,25 @@ func NewEdge(vertex1 Vertexer, vertex2 Vertexer, opts ...EdgeOption) Edger {
 
 // newEdge performs setup required for linking vertices together, so the links
 // are setup in such a way that any path can be traversed the an edge.
-func newEdge(edge *Edge, v1, v2 Vertexer) Edger {
+func newEdge(edge *Edge, v1, v2 vertex.Vertexer) Edger {
 	edge.SetVertex1(v1)
 	edge.SetVertex2(v2)
 
 	return edge
 }
 
-type EdgeOption func(edge Edger) Edger
+type Option func(edge Edger)
 
-func DirectedEdge(edge Edger) Edger {
-	edge.SetDirected(true)
-	return edge
+func WithDirected(directed bool) Option {
+	return func(edge Edger) {
+		edge.SetDirected(directed)
+	}
+}
+
+func WithCost(cost float64) Option {
+	return func(edge Edger) {
+		edge.SetCost(cost)
+	}
 }
 
 // Edge provides the data structure for a curve, or arc, which details a path
@@ -61,10 +73,10 @@ type Edge struct {
 	label string
 	// Vertex1 provides the first vertex on an edge.
 	// On a directed edge, Vertex1 is the starting vertex.
-	vertex1 Vertexer
+	vertex1 vertex.Vertexer
 	// Vertex2 provides the second vertex on an edge.
 	// On a directed edge, Vertex2 is the endpoint.
-	vertex2 Vertexer
+	vertex2 vertex.Vertexer
 }
 
 func (e Edge) Cost() float64 {
@@ -91,11 +103,11 @@ func (e *Edge) SetLabel(label string) {
 	e.label = label
 }
 
-func (e Edge) Vertex1() Vertexer {
+func (e Edge) Vertex1() vertex.Vertexer {
 	return e.vertex1
 }
 
-func (e *Edge) SetVertex1(vertex1 Vertexer) {
+func (e *Edge) SetVertex1(vertex1 vertex.Vertexer) {
 	if e.vertex1 == nil {
 		return
 	}
@@ -104,11 +116,11 @@ func (e *Edge) SetVertex1(vertex1 Vertexer) {
 	setFamily(e)
 }
 
-func (e Edge) Vertex2() Vertexer {
+func (e Edge) Vertex2() vertex.Vertexer {
 	return e.vertex2
 }
 
-func (e *Edge) SetVertex2(vertex2 Vertexer) {
+func (e *Edge) SetVertex2(vertex2 vertex.Vertexer) {
 	if e.vertex2 == nil {
 		return
 	}

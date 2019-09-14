@@ -1,4 +1,4 @@
-module github.com/matthewhartstonge/csp
+module github.com/matthewhartstonge/graph
 
 go 1.13
 

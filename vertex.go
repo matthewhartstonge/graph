@@ -1,5 +1,9 @@
 package csp
 
+import (
+	"github.com/sirupsen/logrus"
+)
+
 func NewVertex(label string) Vertexer {
 	return &Vertex{
 		label: label,
@@ -52,27 +56,45 @@ func (v Vertex) Children() []Vertexer {
 }
 
 func (v *Vertex) AddChild(vertex Vertexer) Vertexer {
+	logger := logrus.WithFields(logrus.Fields{
+		"struct":  "Vertex",
+		"method":  "AddChild",
+		"vertex1": v.Label(),
+		"vertex2": vertex.Label(),
+	})
+
 	c, found := addToSet(v.children, vertex)
 	if found {
+		logger.Debug("child exists")
 		return v
 	}
 
+	logger.Debug("added child")
 	v.children = c
-	return vertex.AddParent(v)
+	return v
 }
 
 func (v Vertex) Parents() []Vertexer {
-	return v.children
+	return v.parents
 }
 
 func (v *Vertex) AddParent(vertex Vertexer) Vertexer {
+	logger := logrus.WithFields(logrus.Fields{
+		"struct":  "Vertex",
+		"method":  "AddParent",
+		"vertex1": vertex.Label(),
+		"vertex2": v.Label(),
+	})
+
 	p, found := addToSet(v.parents, vertex)
 	if found {
+		logger.Debug("parent exists")
 		return v
 	}
 
+	logger.Debug("added parent")
 	v.parents = p
-	return vertex.AddChild(v)
+	return v
 }
 
 func (v Vertex) Visited() bool {

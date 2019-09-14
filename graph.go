@@ -4,11 +4,13 @@ import (
 	"fmt"
 )
 
+// TODO: what does the graph say?
 type Grapher interface {
 	GetFrontier()
 	GetPaths()
 	AddEdge()
 	AddNode()
+	Solve()
 }
 
 // NewGraph creates a new graph.
@@ -25,18 +27,11 @@ func NewGraph(options ...GraphOption) *Graph {
 		option(g)
 	}
 
-	return g
+	return g.preprocess()
 }
 
 // GraphOption provides variadic options when creating a new Graph.
 type GraphOption func(g *Graph)
-
-// GoalFunc provides the algorithm to check if this is the goal vertex.
-type GoalFunc func(v Vertexer) bool
-
-// TODO: use Grapher interface instead.
-// TODO: document SearchStrategy.
-type SearchStrategy func(V []Vertexer, E []Edger) *Vertex
 
 // WithVertices provides a way to supply your own vertices when creating a new
 // graph.
@@ -87,21 +82,34 @@ type Graph struct {
 	Strategy SearchStrategy
 }
 
-func (g *Graph) preprocess() {
-	// for _, e := range g.E {
-	// 	if e.Undirected {
-	// 		g.digraph = false
-	// 		break
-	// 	}
-	// }
+// GoalFunc provides the algorithm to check if this is the goal vertex.
+type GoalFunc func(v Vertexer) bool
+
+// TODO: use Grapher interface instead.
+// TODO: document SearchStrategy.
+type SearchStrategy func(V []Vertexer, E []Edger) Vertexer
+
+func (g *Graph) preprocess() *Graph {
+	g.digraph = true
+	for _, e := range g.E {
+		// Detect if a directed graph.
+		if !e.Directed() {
+			g.digraph = false
+			break
+		}
+	}
+
+	return g
 }
 
+// PrintInfo prints information about the graphs directionality, parents and
+// children.
 func (g Graph) PrintInfo() {
-	// graphType := "undirected"
-	// if g.digraph {
-	// 	graphType = "directed"
-	// }
-	// fmt.Printf("Graph:\n- is a %s graph\n", graphType)
+	graphType := "undirected graph"
+	if g.digraph {
+		graphType = "digraph"
+	}
+	fmt.Printf("Graph:\n- is a %s.\n\n", graphType)
 
 	// Print Links
 	fmt.Println("Lineage:")
@@ -116,17 +124,19 @@ func (g Graph) PrintInfo() {
 }
 
 func printDescendants(vertex Vertexer) string {
-	line := ""
+	line := fmt.Sprintf("(%s)\n", vertex.Label())
 	for _, child := range vertex.Children() {
-		line = fmt.Sprintf(" = parent of => %s", printDescendants(child))
+		line = fmt.Sprintf("%s|- parent of -> %s", line, printDescendants(child))
 	}
-	return fmt.Sprintf("(%s)%s", vertex.Label, line)
+
+	return fmt.Sprintf("%s", line)
 }
 
 func printHeritage(vertex Vertexer) string {
-	line := ""
+	line := fmt.Sprintf("(%s)\n", vertex.Label())
 	for _, parent := range vertex.Parents() {
-		line = fmt.Sprintf(" = child of => %s", printHeritage(parent))
+		line = fmt.Sprintf("%s|- child of -> %s", line, printHeritage(parent))
 	}
-	return fmt.Sprintf("(%s)%s", vertex.Label, line)
+
+	return fmt.Sprintf("%s", line)
 }

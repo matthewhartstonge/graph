@@ -1,4 +1,4 @@
-package json
+package utils
 
 import (
 	// Standard Library Imports
@@ -45,7 +45,7 @@ func LoadJsonGraph(fp string) (meta *JSONGraph) {
 	return
 }
 
-func ConvertToVE(metadata *JSONGraph) (V []vertex.Vertexer, E []edge.Edger) {
+func JSONGraphToVE(metadata *JSONGraph) (V []vertex.Vertexer, E []edge.Edger) {
 	var vertexMap = make(map[string]vertex.Vertexer)
 	var vertices []vertex.Vertexer
 	for _, jsonVertex := range metadata.Vertices {

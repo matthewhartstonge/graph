@@ -1,13 +1,16 @@
 package main
 
 import (
+	// Standard Library Imports
 	"os"
 	"time"
 
-	json "github.com/matthewhartstonge/graph/_examples/utils"
+	// External Imports
 	log "github.com/sirupsen/logrus"
 
+	// Internal Imports
 	"github.com/matthewhartstonge/graph"
+	"github.com/matthewhartstonge/graph/_examples/utils"
 )
 
 func init() {
@@ -18,10 +21,10 @@ func init() {
 
 func main() {
 	// todo: load graph from file.
-	meta := json.LoadJsonGraph("_examples/mailbot/graph.json")
+	meta := utils.LoadJsonGraph("_examples/mailbot/graph.json")
 
 	start := time.Now()
-	V, E := json.ConvertToVE(meta)
+	V, E := utils.JSONGraphToVE(meta)
 	G := graph.New(
 		graph.WithVertices(V),
 		graph.WithEdges(E),

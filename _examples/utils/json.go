@@ -30,7 +30,7 @@ type JSONGraph struct {
 
 func LoadJsonGraph(fp string) (meta *JSONGraph) {
 	gopath := os.Getenv("GOPATH")
-	fp = filepath.Clean(fmt.Sprintf("%s/src/github.com/matthewhartstonge/csp/%s", gopath, fp))
+	fp = filepath.Clean(fmt.Sprintf("%s/src/github.com/matthewhartstonge/graph/%s", gopath, fp))
 	f, err := ioutil.ReadFile(fp)
 	if err != nil {
 		log.Fatal(err)

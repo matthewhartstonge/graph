@@ -18,12 +18,15 @@
 package path
 
 import (
+	// Internal Imports
 	"github.com/matthewhartstonge/graph/edge"
 )
 
+const emptyIndex = -1
+
 func New() *Path {
 	return &Path{
-		current: -1,
+		current: emptyIndex,
 		edges:   []edge.Edger{},
 	}
 }
@@ -53,7 +56,9 @@ func (p Path) Cost() float64 {
 
 func (p *Path) Next() edge.Edger {
 	p.current++
-	if p.current >= len(p.edges) {
+	lenEdges := len(p.edges)
+	if p.current >= lenEdges {
+		p.current = lenEdges
 		return nil
 	}
 
@@ -62,7 +67,8 @@ func (p *Path) Next() edge.Edger {
 
 func (p *Path) Prev() edge.Edger {
 	p.current--
-	if p.current <= 0 {
+	if p.current <= emptyIndex {
+		p.current = emptyIndex
 		return nil
 	}
 
@@ -70,5 +76,5 @@ func (p *Path) Prev() edge.Edger {
 }
 
 func (p *Path) Reset() {
-	p.current = -1
+	p.current = emptyIndex
 }

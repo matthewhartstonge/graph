@@ -84,9 +84,9 @@ func JSONGraphToVE(metadata *JSONGraph) (V []vertex.Vertexer, E []edge.Edger) {
 
 		e := edge.New(
 			v1, v2,
-			edge.WithDirected(jsonEdge.Directed),
 			edge.WithCost(jsonEdge.Cost),
 		)
+		e.SetDirected(jsonEdge.Directed)
 		edges = append(edges, e)
 	}
 

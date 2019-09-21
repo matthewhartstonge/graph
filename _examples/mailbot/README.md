@@ -30,6 +30,7 @@ Using a depth-first search strategy:
 
 ```
 Solution 1:
+Total Cost: 41.00
 - start
 - (o103) -(12.0)-> (o109)
 - (o109) -(16.0)-> (o119)
@@ -37,6 +38,7 @@ Solution 1:
 - (o123) -(4.0)-> (r123)
 
 Solution 2:
+Total Cost: 47.00
 - start
 - (o103) -(4.0)-> (b3)
 - (b3) -(7.0)-> (b4)
@@ -46,6 +48,7 @@ Solution 2:
 - (o123) -(4.0)-> (r123)
 
 Solution 3:
+Total Cost: 53.00
 - start
 - (o103) -(4.0)-> (b3)
 - (b3) -(4.0)-> (b1)
@@ -58,5 +61,5 @@ Solution 3:
 
 No more solutions found!
 
-time="2019-09-22T02:16:54+12:00" level=info took="849.117µs"
+time="2019-09-22T02:29:14+12:00" level=info took="887.532µs"
 ```

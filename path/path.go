@@ -64,7 +64,7 @@ type Path struct {
 }
 
 func (p *Path) Append(pathExtension edge.Edger) {
-	p.cost = pathExtension.Cost()
+	p.cost += pathExtension.Cost()
 	p.path = append(p.path, pathExtension)
 }
 

@@ -18,145 +18,243 @@
 package edge
 
 import (
+	// Standard Library Imports
+	"fmt"
+
 	// Internal Imports
 	"github.com/matthewhartstonge/graph/vertex"
 )
 
+// Edger provides an implementation for an edge within a graph.
+//
+// Edges lead from one vertex to another, and as such, provide a way to traverse
+// a graph. This traversal throughout a graph provides the hope that one of the
+// next head vertices might be able to satisfy the goal state.
 type Edger interface {
+	// Cost returns the cost of traversing the edge.
 	Cost() float64
+	// SetCost enables the edge cost to be set.
 	SetCost(cost float64)
+
+	// Directed returns true if the edge is a directed edge. This informs us
+	// that, if the edge is directed, the edge can only be traversed from from
+	// the tail vertex, to the head vertex. An undirected edge means that the
+	// edge can be traversed from either way.
 	Directed() bool
+	// SetDirected enables setting the edge as either being directed or
+	// undirected.
 	SetDirected(directed bool)
+
+	// Label provides a name for the edge.
 	Label() string
+	// SetLabel sets a name for the edge.
 	SetLabel(label string)
-	Vertex1() vertex.Vertexer
-	SetVertex1(vertex1 vertex.Vertexer)
-	Vertex2() vertex.Vertexer
-	SetVertex2(vertex2 vertex.Vertexer)
+
+	// Tail returns the starting point of the edge.
+	// If the tail is nil, this edge is the starting of a path.
+	Tail() vertex.Vertexer
+	// SetTail enables setting the start point of an edge.
+	SetTail(tail vertex.Vertexer)
+
+	// Head returns the end point of the edge.
+	// If the head vertex holds no neighbours, this edge actually contains an
+	// isolated vertex with no edges.
+	Head() vertex.Vertexer
+	// SetHead enables setting the end point of an edge.
+	SetHead(head vertex.Vertexer)
 }
 
-func New(vertex1 vertex.Vertexer, vertex2 vertex.Vertexer, opts ...Option) Edger {
+// New returns a new directed edge. The edge can be mutated by providing
+// variadic options.
+func New(tail vertex.Vertexer, head vertex.Vertexer, opts ...Option) Edger {
 	edge := &Edge{
 		cost:     0,
-		directed: false,
+		directed: true,
 		label:    "",
-		vertex1:  vertex1,
-		vertex2:  vertex2,
+		tail:     tail,
+		head:     head,
 	}
 
 	for _, opt := range opts {
 		opt(edge)
 	}
 
-	return newEdge(edge, vertex1, vertex2)
+	return newEdge(edge, tail, head)
 }
 
 // newEdge performs setup required for linking vertices together, so the links
 // are setup in such a way that any path can be traversed the an edge.
 func newEdge(edge *Edge, v1, v2 vertex.Vertexer) Edger {
-	edge.SetVertex1(v1)
-	edge.SetVertex2(v2)
+	edge.SetTail(v1)
+	edge.SetHead(v2)
 
 	return edge
 }
 
+// Option provides options to mutate a given edge on initialization.
 type Option func(edge Edger)
 
-func WithDirected(directed bool) Option {
-	return func(edge Edger) {
-		edge.SetDirected(directed)
-	}
-}
-
+// WithCost sets the cost of the edge.
+// By default, an edge costs nothing to traverse.
 func WithCost(cost float64) Option {
 	return func(edge Edger) {
 		edge.SetCost(cost)
 	}
 }
 
-// Edge provides the data structure for a curve, or arc, which details a path
-// between two given vertices within a graph.
+// WithLabel sets the label for a given edge.
+// By default, an edge has no label.
+func WithLabel(label string) Option {
+	return func(edge Edger) {
+		edge.SetLabel(label)
+	}
+}
+
+// WithUndirected sets the edge as being undirected, allowing traversal from
+// both sides.
+// By default, an edge is marked as being directed.
+func WithUndirected() Option {
+	return func(edge Edger) {
+		edge.SetDirected(false)
+	}
+}
+
+// Edge provides the concrete data structure for an Edger, that is a curve, or
+// arc, which details a path between two given vertices within a graph.
 //
 // When solving a state-space problem, an edge represents an action.
 type Edge struct {
 	// Cost provides a weight for deducing edge satisfiability for heuristic,
 	// or cost/weight constrained solutions.
 	cost float64
+
 	// Directed specifies whether the edge is either bi-directional, or
 	// directed, that is Vertex1 -> Vertex2.
 	directed bool
+
 	// Label provides context to an Edge, for example, it may provide the
 	// action that will take the agent from one vertex to another.
 	label string
-	// Vertex1 provides the first vertex on an edge.
-	// On a directed edge, Vertex1 is the starting vertex.
-	vertex1 vertex.Vertexer
-	// Vertex2 provides the second vertex on an edge.
-	// On a directed edge, Vertex2 is the endpoint.
-	vertex2 vertex.Vertexer
+
+	// tail provides the first vertex on an edge.
+	// On a directed edge, tail is the starting vertex.
+	tail vertex.Vertexer
+
+	// head provides the second vertex on an edge.
+	// On a directed edge, head is the endpoint.
+	head vertex.Vertexer
 }
 
+// Cost returns the cost of traversing the edge.
 func (e Edge) Cost() float64 {
 	return e.cost
 }
 
+// SetCost sets the cost of traversing the edge.
 func (e *Edge) SetCost(cost float64) {
 	e.cost = cost
 }
 
+// Directed returns true if the edge is a directed edge.
 func (e Edge) Directed() bool {
 	return e.directed
 }
 
+// SetDirected enables setting the edge as either being directed or
+// undirected.
 func (e *Edge) SetDirected(directed bool) {
 	e.directed = directed
 }
 
+// Label returns the name set for the edge.
 func (e Edge) Label() string {
 	return e.label
 }
 
+// SetLabel sets a name for the edge.
 func (e *Edge) SetLabel(label string) {
 	e.label = label
 }
 
-func (e Edge) Vertex1() vertex.Vertexer {
-	return e.vertex1
+// Tail returns the starting point of the edge.
+// If the tail is nil, this edge is the starting of a path.
+func (e Edge) Tail() vertex.Vertexer {
+	return e.tail
 }
 
-func (e *Edge) SetVertex1(vertex1 vertex.Vertexer) {
-	if e.vertex1 == nil {
+// SetTail enables setting the start point of an edge.
+func (e *Edge) SetTail(tail vertex.Vertexer) {
+	if e.tail == nil {
 		return
 	}
 
-	e.vertex1 = vertex1
+	e.tail = tail
 	setFamily(e)
 }
 
-func (e Edge) Vertex2() vertex.Vertexer {
-	return e.vertex2
+// Head returns the end point of the edge.
+// If the head vertex holds no neighbours, this edge actually contains an
+// isolated vertex with no edges.
+func (e Edge) Head() vertex.Vertexer {
+	return e.head
 }
 
-func (e *Edge) SetVertex2(vertex2 vertex.Vertexer) {
-	if e.vertex2 == nil {
+// SetHead enables setting the end point of an edge.
+func (e *Edge) SetHead(head vertex.Vertexer) {
+	if e.head == nil {
 		return
 	}
 
-	e.vertex2 = vertex2
+	e.head = head
 	setFamily(e)
 }
 
+// setFamily, based on knowledge provided by the edge, binds in neighbours to
+// build an adjacency list on the vertices.
 func setFamily(edger Edger) {
-	if edger.Vertex1() != nil && edger.Vertex2() != nil {
+	if edger.Tail() != nil && edger.Head() != nil {
 		switch edger.Directed() {
 		case false:
-			edger.Vertex2().AddChild(edger.Vertex1())
-			edger.Vertex1().AddParent(edger.Vertex2())
+			edger.Head().AddChild(edger.Tail())
+			edger.Tail().AddParent(edger.Head())
 			fallthrough
 
 		case true:
-			edger.Vertex1().AddChild(edger.Vertex2())
-			edger.Vertex2().AddParent(edger.Vertex1())
+			edger.Tail().AddChild(edger.Head())
+			edger.Head().AddParent(edger.Tail())
 		}
 	}
+}
+
+// String implements Stringer.
+// Edge returns the edge's label, if set, or meta information about the edge to
+// help provide context, or a greater understanding of part of a path.
+func (e Edge) String() string {
+	if e.Label() != "" {
+		return e.Label()
+	}
+
+	return e.edgeMeta()
+}
+
+// edgeMeta generates meta information about the edge to help understand the
+// part this edge plays within a path.
+func (e Edge) edgeMeta() string {
+	cost := ""
+	if e.Cost() > 0 {
+		cost = fmt.Sprintf("(%.1f)", e.Cost())
+	}
+
+	tailDirection := "<"
+	headDirection := ">"
+	if e.Directed() {
+		tailDirection = ""
+	}
+
+	return fmt.Sprintf(
+		"(%s) %s-%s-%s (%s)",
+		e.Tail().Label(),
+		tailDirection, cost, headDirection,
+		e.Head().Label(),
+	)
 }

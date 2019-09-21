@@ -25,16 +25,9 @@ import (
 	// Internal Imports
 	"github.com/matthewhartstonge/graph"
 	"github.com/matthewhartstonge/graph/edge"
+	"github.com/matthewhartstonge/graph/goal"
 	"github.com/matthewhartstonge/graph/vertex"
 )
-
-func solvent(v vertex.Vertexer) bool {
-	if v.Label() == "v4" {
-		return true
-	}
-
-	return false
-}
 
 func main() {
 	v1 := vertex.New("v1")
@@ -52,21 +45,19 @@ func main() {
 	E := []edge.Edger{
 		edge.New(
 			v1, v2,
-			edge.WithDirected(true),
 			edge.WithCost(1),
 		),
 		edge.New(
 			v1, v3,
-			edge.WithDirected(true),
 			edge.WithCost(1.2),
 		),
 		edge.New(
 			v2, v3,
-			edge.WithDirected(true),
 			edge.WithCost(1)),
 		edge.New(
 			v3, v4,
 			edge.WithCost(4.8),
+			edge.WithUndirected(),
 		),
 	}
 
@@ -74,7 +65,7 @@ func main() {
 	G := graph.New(
 		graph.WithVertices(V),
 		graph.WithEdges(E),
-		graph.WithGoalFunc(solvent),
+		graph.WithGoalFunc(goal.VertexLabelEquals("v4")),
 	)
 
 	G.PrintInfo()

@@ -23,26 +23,30 @@ import (
 
 	// Internal Imports
 	"github.com/matthewhartstonge/graph/edge"
+	"github.com/matthewhartstonge/graph/path"
 	"github.com/matthewhartstonge/graph/vertex"
 )
 
-// TODO: what does the graph say?
+// Grapher is the interface that wraps the graph search algorithms.
+//
+// Search traverses a graph in order to find a solution. If no solution is
+// found, nil will be returned. Search should be implemented in such a way that
+// multiple calls to search can continue to find other solutions from where it
+// left off.
 type Grapher interface {
-	GetFrontier()
-	GetPaths()
-	AddEdge()
-	AddNode()
-	Solve()
+	Search() (goalPath path.Pather)
 }
 
-// New creates a new graph.
+// New creates a new graph that to solve a graph search.
 func New(options ...Option) *Graph {
 	g := &Graph{
-		V:        []vertex.Vertexer{},
-		E:        []edge.Edger{},
-		digraph:  false,
-		Strategy: nil,
-		Goal:     nil,
+		digraph: false,
+		V:       []vertex.Vertexer{},
+		E:       []edge.Edger{},
+
+		Frontier:         NewDepthFirstSearch(),
+		StartingVertices: []vertex.Vertexer{},
+		Goal:             nil,
 	}
 
 	for _, option := range options {
@@ -70,10 +74,18 @@ func WithEdges(edges []edge.Edger) Option {
 	}
 }
 
-// WithSearchStrategy provides a way to inject a graph search algorithm.
-func WithSearchStrategy(f SearchStrategy) Option {
+// WithStartingVertices provides a way to inject vertices to start with.
+func WithStartingVertices(vertices ...vertex.Vertexer) Option {
 	return func(g *Graph) {
-		g.Strategy = f
+		g.StartingVertices = vertices
+	}
+}
+
+// WithSearchStrategy provides a way to inject a search strategy, that is, the
+// way in which a frontier is expanded in order to find the goal state.
+func WithSearchStrategy(strategy Strategizer) Option {
+	return func(g *Graph) {
+		g.Frontier = strategy
 	}
 }
 
@@ -84,6 +96,10 @@ func WithGoalFunc(f GoalFunc) Option {
 		g.Goal = f
 	}
 }
+
+// GoalFunc provides the algorithm to check if the provided vertex satisfies
+// the goal.
+type GoalFunc func(vertex vertex.Vertexer) bool
 
 // Graph provides the data structure for a Graph.
 // G = (V, E)
@@ -97,20 +113,20 @@ type Graph struct {
 	// E contains a set of edges, also called links.
 	E []edge.Edger
 
+	// Frontier provides the paths that have been, or may yet to be expanded.
+	// The way in which the frontier returns paths is known as the search
+	// strategy.
+	Frontier Strategizer
+	// StartingVertices contain the vertices to start solving the graph search
+	// from.
+	StartingVertices []vertex.Vertexer
 	// Goal contains the algorithm to check if a given vertex satisfies the
 	// goal state.
 	Goal GoalFunc
-	// Strategy provides the search strategy algorithm.
-	Strategy SearchStrategy
 }
 
-// GoalFunc provides the algorithm to check if this is the goal vertex.
-type GoalFunc func(v vertex.Vertexer) bool
-
-// TODO: use Grapher interface instead.
-// TODO: document SearchStrategy.
-type SearchStrategy func(V []vertex.Vertexer, E []edge.Edger) vertex.Vertexer
-
+// preprocess performs any upfront initialization required, for example,
+// ensuring the frontier has paths to enable solving.
 func (g *Graph) preprocess() *Graph {
 	g.digraph = true
 	for _, e := range g.E {
@@ -119,6 +135,19 @@ func (g *Graph) preprocess() *Graph {
 			g.digraph = false
 			break
 		}
+	}
+
+	// First off, we need to add the starting vertices to the frontier so we
+	// have some starting points to attempt to solve the graph search.
+	for _, startingVertex := range g.StartingVertices {
+		// We add the vertices as a path, but with the tail being null, to
+		// enable detection of the start of a path.
+		g.Frontier.Add(path.New(path.WithEdge(
+			edge.New(
+				nil, startingVertex,
+				edge.WithLabel("start"),
+			),
+		)))
 	}
 
 	return g

@@ -15,37 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package vertex
+package graph
 
-// NewStack returns a new vertex stack.
-func NewStack() Stack {
-	return Stack{
-		len:   0,
-		stack: []Vertexer{},
-	}
-}
+import (
+	// Internal Imports
+	"github.com/matthewhartstonge/graph/path"
+)
 
-// Stack provides a stack data structure for vertices.
-type Stack struct {
-	len   int
-	stack []Vertexer
-}
-
-func (v Stack) Len() int {
-	return v.len
-}
-
-func (v *Stack) Push(vertexer Vertexer) {
-	v.stack = append(v.stack, vertexer)
-	v.len++
-}
-
-func (v *Stack) Pop() (vertexer Vertexer) {
-	if v.len > 0 {
-		vertexer = v.stack[v.len-1]
-		v.stack = v.stack[:v.len-1]
-		v.len--
-	}
-
-	return
+// Strategizer provides a search strategy.
+// A search strategy defines the way in which the underlying frontier is
+// expanded and traversed.
+type Strategizer interface {
+	// Len returns the current number of paths stored in the frontier.
+	Len() int
+	// Next returns the next path in the frontier to process, or nil if there
+	// are no more paths to expand.
+	Next() path.Pather
+	// Add stores an expanded path into the frontier.
+	Add(path path.Pather)
 }

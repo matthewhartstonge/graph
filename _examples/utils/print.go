@@ -57,6 +57,10 @@ func printSolution(goalPath path.Pather, solutionCount int) {
 	}
 
 	fmt.Printf("Solution %d:\n", solutionCount)
+	if goalPath.Cost() > 0 {
+		fmt.Printf("Total Cost: %.2f\n", goalPath.Cost())
+	}
+
 	for {
 		edge := goalPath.Next()
 		if edge == nil {

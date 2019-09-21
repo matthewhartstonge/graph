@@ -28,6 +28,7 @@ import (
 	// Internal Imports
 	"github.com/matthewhartstonge/graph"
 	"github.com/matthewhartstonge/graph/_examples/utils"
+	"github.com/matthewhartstonge/graph/goal"
 )
 
 func init() {
@@ -40,12 +41,22 @@ func main() {
 	meta := utils.LoadJsonGraph("_examples/mailbot/graph.json")
 
 	start := time.Now()
+
+	// Convert the JSON representation of vertices and edges to our internal
+	// types, ready to build a graph.
 	V, E := utils.JSONGraphToVE(meta)
+
+	// set starting vertex to room 'o103'
+	startVertex := V[2]
+
+	// Build a graph with a default DFS search strategy.
 	G := graph.New(
 		graph.WithVertices(V),
 		graph.WithEdges(E),
+		graph.WithStartingVertices(startVertex),
+		graph.WithGoalFunc(goal.VertexLabelEquals("r123")),
 	)
-	log.WithField("took", time.Since(start)).Info()
 
-	G.PrintInfo()
+	utils.PrintSolutions(G)
+	log.WithField("took", time.Since(start)).Info()
 }

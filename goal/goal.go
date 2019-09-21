@@ -15,37 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package vertex
+package goal
 
-// NewQueue returns a new vertex queue.
-func NewQueue() Queue {
-	return Queue{
-		len:   0,
-		queue: []Vertexer{},
+import (
+	// Internal Imports
+	"github.com/matthewhartstonge/graph"
+	"github.com/matthewhartstonge/graph/vertex"
+)
+
+// VertexLabelEquals returns a solution based on matching the provided vertex
+// label.
+func VertexLabelEquals(label string) graph.GoalFunc {
+	return func(vertex vertex.Vertexer) bool {
+		return vertex.Label() == label
 	}
-}
-
-// Queue provides a queue data structure for vertices.
-type Queue struct {
-	len   int
-	queue []Vertexer
-}
-
-func (v Queue) Len() int {
-	return v.len
-}
-
-func (v *Queue) Enqueue(vertexer Vertexer) {
-	v.queue = append(v.queue, vertexer)
-	v.len++
-}
-
-func (v *Queue) Dequeue() (vertexer Vertexer) {
-	if v.len > 0 {
-		vertexer = v.queue[0]
-		v.queue = v.queue[1:]
-		v.len--
-	}
-
-	return
 }

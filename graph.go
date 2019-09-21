@@ -153,6 +153,55 @@ func (g *Graph) preprocess() *Graph {
 	return g
 }
 
+// Search implements a generic search algorithm: given a graph, starting
+// vertices and a goal, incrementally explore edges from the start vertices.
+func (g *Graph) Search() (goalPath path.Pather) {
+	// Begin looping over all paths within the frontier so we can
+	// attempt to expand a vertex's neighbours in order to build a path to find
+	// a solution.
+	for {
+		// From the frontier pull out the next potential goal path to try and
+		// derive a solution.
+		goalPath = g.Frontier.Next()
+		if goalPath == nil {
+			// If we have no more paths left in the frontier, we have found no
+			// solution, and as such, need to return home with our tails
+			// between our legs.
+			return
+		}
+
+		// Given a potential goal path, we need to get the last vertex along
+		// the path to check to see if it satisfies the goal.
+		headVertex := goalPath.Last().Head()
+		if g.Goal(headVertex) {
+			// If we manage to find a solution, we will be a good Dobby and
+			// tell our master that we did the good.
+			return goalPath
+		}
+
+		// Otherwise, search the known edges for neighbours to the current
+		// vertex.
+		for _, knownEdge := range g.E {
+			// we've found an edge which has the current vertex as the starting
+			// point..
+			if knownEdge.Tail() == headVertex {
+				// if the edge is not labelled, give it something to show the
+				// direction.
+				// knownEdge.SetLabel(generateEdgeLabel(knownEdge))
+
+				// Get a deep copy of the path, so that we don't mung data.
+				potentialGoalPath := goalPath.Copy()
+
+				// Expand the potential goal path with the vertex's new found
+				// neighbour and add the path to the frontier for later
+				// processing.
+				potentialGoalPath.Append(knownEdge)
+				g.Frontier.Add(potentialGoalPath)
+			}
+		}
+	}
+}
+
 // PrintInfo prints information about the graphs directionality, parents and
 // children.
 func (g Graph) PrintInfo() {

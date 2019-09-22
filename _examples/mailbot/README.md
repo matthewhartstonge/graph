@@ -8,6 +8,8 @@ N = {mail, ts, o103, ... }
 A = {⟨ts,mail⟩, ⟨o103,ts⟩, ⟨o103,b3⟩, ⟨o103,o109⟩, ...}
 ```
 
+### Problem
+
 Consider the problem of the delivery robot finding a path from location `o103`
 to location `r123`. 
  
@@ -24,7 +26,7 @@ these three paths would be a solution to the graph-searching problem.
 The first of these is an optimal solution, with a solution cost of
 `12 + 16 + 9 + 4 = 41`.
 
-### Output
+### Outcomes
 
 Using a depth-first search strategy:
 

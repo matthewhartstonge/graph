@@ -30,11 +30,12 @@ func NewDepthFirstSearch() *DFS {
 }
 
 // DFS provides a depth-first search strategy. It always selects the last
-// vertex added to the frontier.
+// path added to the frontier.
 type DFS struct {
 	stack []path.Pather
 }
 
+// Len returns the current number of paths stored in the stack.
 func (d DFS) Len() int {
 	return len(d.stack)
 }

@@ -28,9 +28,9 @@ import (
 type Strategizer interface {
 	// Len returns the current number of paths stored in the frontier.
 	Len() int
+	// Add stores an expanded path into the frontier.
+	Add(path path.Pather)
 	// Next returns the next path in the frontier to process, or nil if there
 	// are no more paths to expand.
 	Next() path.Pather
-	// Add stores an expanded path into the frontier.
-	Add(path path.Pather)
 }

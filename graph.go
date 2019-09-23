@@ -21,6 +21,9 @@ import (
 	// Standard Library Imports
 	"fmt"
 
+	// External Imports
+	log "github.com/sirupsen/logrus"
+
 	// Internal Imports
 	"github.com/matthewhartstonge/graph/edge"
 	"github.com/matthewhartstonge/graph/path"
@@ -97,6 +100,14 @@ func WithGoalFunc(f GoalFunc) Option {
 	}
 }
 
+// WithTraceLogging provides a way to enable algorithm trace logging.
+func WithTraceLogging() Option {
+	return func(g *Graph) {
+		log.SetLevel(log.TraceLevel)
+		g.traceLog = true
+	}
+}
+
 // GoalFunc provides the algorithm to check if the provided vertex satisfies
 // the goal.
 type GoalFunc func(vertex vertex.Vertexer) bool
@@ -107,6 +118,10 @@ type Graph struct {
 	// digraph provides a check to see if the graph is a directed or
 	// undirected.
 	digraph bool
+	// traceLog provides a way to turn on trace logging.
+	// Useful for testing a new algorithm or
+	// understanding the process
+	traceLog bool
 
 	// V contains a set of vertices, also called nodes.
 	V []vertex.Vertexer
@@ -169,6 +184,7 @@ func (g *Graph) Search() (goalPath path.Pather) {
 			// between our legs.
 			return
 		}
+		g.logTrace(traceRemovePath, goalPath)
 
 		// Given a potential goal path, we need to get the last vertex along
 		// the path to check to see if it satisfies the goal.
@@ -197,8 +213,31 @@ func (g *Graph) Search() (goalPath path.Pather) {
 				// processing.
 				potentialGoalPath.Append(knownEdge)
 				g.Frontier.Add(potentialGoalPath)
+				g.logTrace(traceAddPath, potentialGoalPath)
 			}
 		}
+	}
+}
+
+// traceAction provides a specific type for tracing actions performed while
+// solving a graph search.
+type traceAction string
+
+const (
+	traceAddPath    traceAction = "+"
+	traceRemovePath traceAction = "-"
+)
+
+// traceAction enables tracing the operations happening throughout the
+// lifecycle of the graph solve.
+func (g Graph) logTrace(action traceAction, path path.Pather) {
+	if g.traceLog {
+		fields := log.Fields{}
+		if path.Cost() != 0 {
+			fields["cost"] = path.Cost()
+		}
+
+		log.WithFields(fields).Trace(fmt.Sprintf("%s %s", action, path))
 	}
 }
 

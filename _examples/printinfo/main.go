@@ -63,8 +63,10 @@ func main() {
 
 	start := time.Now()
 	G := graph.New(
+		// graph.WithTraceLogging(),
 		graph.WithVertices(V),
 		graph.WithEdges(E),
+		graph.WithStartingVertices(v1),
 		graph.WithGoalFunc(goal.VertexLabelEquals("v4")),
 	)
 

@@ -52,6 +52,7 @@ func solveFlightPath(searchStrategy graph.Strategizer) graph.Grapher {
 	}
 
 	return graph.New(
+		// graph.WithTraceLogging(),
 		graph.WithVertices(vertices),
 		graph.WithEdges(edges),
 		graph.WithStartingVertices(christchurch),

@@ -51,6 +51,7 @@ func main() {
 
 	// Build a graph with a default DFS search strategy.
 	G := graph.New(
+		// graph.WithTraceLogging(),
 		graph.WithVertices(V),
 		graph.WithEdges(E),
 		graph.WithStartingVertices(startVertex),

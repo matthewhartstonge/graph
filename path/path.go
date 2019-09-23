@@ -122,3 +122,17 @@ func (p *Path) Prev() edge.Edger {
 func (p *Path) Reset() {
 	p.current = emptyIndex
 }
+
+// String implements stringer.
+func (p Path) String() string {
+	var path string
+	for _, arc := range p.path {
+		path += arc.Head().Label() + ", "
+	}
+
+	if path == "" {
+		return path
+	}
+
+	return path[:len(path)-2]
+}

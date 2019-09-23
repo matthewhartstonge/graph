@@ -17,11 +17,6 @@
 
 package vertex
 
-import (
-	// External Imports
-	"github.com/sirupsen/logrus"
-)
-
 type Vertexer interface {
 	Label() string
 	SetLabel(label string)
@@ -74,20 +69,11 @@ func (v Vertex) Children() []Vertexer {
 }
 
 func (v *Vertex) AddChild(vertex Vertexer) Vertexer {
-	logger := logrus.WithFields(logrus.Fields{
-		"struct":  "Vertex",
-		"method":  "AddChild",
-		"vertex1": v.Label(),
-		"vertex2": vertex.Label(),
-	})
-
 	c, found := addToSet(v.children, vertex)
 	if found {
-		logger.Debug("child exists")
 		return v
 	}
 
-	logger.Debug("added child")
 	v.children = c
 	return v
 }
@@ -97,20 +83,11 @@ func (v Vertex) Parents() []Vertexer {
 }
 
 func (v *Vertex) AddParent(vertex Vertexer) Vertexer {
-	logger := logrus.WithFields(logrus.Fields{
-		"struct":  "Vertex",
-		"method":  "AddParent",
-		"vertex1": vertex.Label(),
-		"vertex2": v.Label(),
-	})
-
 	p, found := addToSet(v.parents, vertex)
 	if found {
-		logger.Debug("parent exists")
 		return v
 	}
 
-	logger.Debug("added parent")
 	v.parents = p
 	return v
 }

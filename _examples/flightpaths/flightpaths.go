@@ -43,12 +43,13 @@ func solveFlightPath(searchStrategy graph.Strategizer) graph.Grapher {
 	}
 
 	edges := []edge.Edger{
-		edge.New(christchurch, goldCoast),
-		edge.New(christchurch, auckland),
-		edge.New(christchurch, wellington),
-		edge.New(wellington, goldCoast),
-		edge.New(wellington, auckland),
-		edge.New(auckland, goldCoast),
+		// Cost in Kilometres
+		edge.New(christchurch, goldCoast, edge.WithCost(2434)),
+		edge.New(christchurch, auckland, edge.WithCost(763)),
+		edge.New(christchurch, wellington, edge.WithCost(305)),
+		edge.New(wellington, goldCoast, edge.WithCost(2437)),
+		edge.New(wellington, auckland, edge.WithCost(491)),
+		edge.New(auckland, goldCoast, edge.WithCost(2224)),
 	}
 
 	return graph.New(
@@ -69,4 +70,8 @@ func main() {
 	fmt.Println("Breadth-First Solution:")
 	bfs := graph.NewBreadthFirstSearch()
 	utils.PrintSolutions(solveFlightPath(bfs))
+
+	fmt.Println("Lowest-Cost First Solution:")
+	lcfs := graph.NewLowestCostFirstSearch()
+	utils.PrintSolutions(solveFlightPath(lcfs))
 }

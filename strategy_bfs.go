@@ -41,16 +41,16 @@ func (b BFS) Len() int {
 }
 
 // Add enqueues a path to the end of the queue.
-func (b *BFS) Add(path path.Pather) {
-	b.queue = append(b.queue, path)
+func (b *BFS) Add(newPath path.Pather) {
+	b.queue = append(b.queue, newPath)
 }
 
 // Next dequeues a path from the front of the queue.
-func (b *BFS) Next() (path path.Pather) {
+func (b *BFS) Next() (nextPath path.Pather) {
 	if b.Len() > 0 {
-		path = b.queue[0]
+		nextPath = b.queue[0]
 		b.queue = b.queue[1:]
 	}
 
-	return path
+	return
 }

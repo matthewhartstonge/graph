@@ -41,19 +41,19 @@ func (d DFS) Len() int {
 }
 
 // Add pushes a path on to the top of the stack.
-func (d *DFS) Add(path path.Pather) {
-	d.stack = append(d.stack, path)
+func (d *DFS) Add(newPath path.Pather) {
+	d.stack = append(d.stack, newPath)
 }
 
 // Next pops the path that is sitting on top of the stack.
-func (d *DFS) Next() (path path.Pather) {
+func (d *DFS) Next() (nextPath path.Pather) {
 	lenPaths := d.Len()
 	if lenPaths > 0 {
-		path = d.stack[lenPaths-1]
+		nextPath = d.stack[lenPaths-1]
 		d.stack = d.stack[:lenPaths-1]
 	}
 
-	return path
+	return
 }
 
 var _ Strategizer = &DFS{}
